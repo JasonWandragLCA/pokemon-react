@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://jason_lca:nANEzWtX7lMKLTks@mongocluster.tht6v.mongodb.net/<dbname>?retryWrites=true&w=majority",
+  "jwtSecret": "ydy5e87OBObpb7o7tvngubl97bpoyb87fklsDLIFS09753FDLH"
+}
