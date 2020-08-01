@@ -37,7 +37,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { pokemon_number, name, sprites, date } = req.body;
+    const { pokemon_number, name, sprites } = req.body;
 
     try {
       const newPokemon = new Pokemon({
@@ -45,7 +45,6 @@ router.post(
         pokemon_number,
         name,
         sprites,
-        date,
       });
 
       const pokemon = await newPokemon.save();
@@ -60,8 +59,33 @@ router.post(
 // @route   PUT api/pokemon/:id
 // @desc    Update pokemon
 // @access  Private
-router.put("/:id", (req, res) => {
-  res.send("Update pokemon");
+router.put("/:id", auth, async (req, res) => {
+  const { pokemon_number, name, sprites } = req.body;
+
+  // Build Pokemon Object
+  const pokemonFields = {};
+  if (pokemon_number) pokemonFields.pokemon_number = pokemon_number;
+  if (name) pokemonFields.name = name;
+  if (sprites) pokemonFields.sprites = sprites;
+
+  try {
+    let pokemon = await Pokemon.findById(req.params.id);
+    if (!pokemon) res.status(404).json({ msg: "Pokemon not found" });
+
+    // Make sure user owns pokemon
+    if (pokemon.user.toString() !== req.user.id)
+      res.status(401).json({ msg: "Not Authorized" });
+
+    pokemon = await Pokemon.findByIdAndUpdate(
+      req.params.id,
+      { $set: pokemonFields },
+      { new: true }
+    );
+    res.json(pokemon);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
 // @route   DELETE api/pokemon/:id
