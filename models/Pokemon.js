@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 // TODO:: Check information of pokemon to be saved to DB
 // Currently saved:
 // - user (User who owns this pokemon)
+// - pokemon_number (Pokemon number according to pokedex)
 // - name (name of pokemon)
 // - sprites (array of pokemon images)
 // - pokemon_url (link to get pokemon info)
