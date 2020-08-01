@@ -13,6 +13,10 @@ const PokemonSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
+  pokemon_number: {
+    type: Number,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
