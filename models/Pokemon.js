@@ -23,11 +23,7 @@ const PokemonSchema = mongoose.Schema({
     required: true,
   },
   sprites: {
-    type: Array,
-    required: true,
-  },
-  pokemon_url: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   },
   date: {
