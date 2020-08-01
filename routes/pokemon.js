@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
+
 // Import Models
 const User = require("../models/User");
 const Pokemon = require("../models/Pokemon");
@@ -11,6 +12,7 @@ const Pokemon = require("../models/Pokemon");
 // @access  Private
 router.get("/", auth, async (req, res) => {
   try {
+    // gets all pokemon in database related to the user
     const pokemon = await Pokemon.find({ user: req.user.id }).sort({
       date: -1,
     });
@@ -35,7 +37,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { pokemon_number, name, sprites, pokemon_url, date } = req.body;
+    const { pokemon_number, name, sprites, date } = req.body;
 
     try {
       const newPokemon = new Pokemon({

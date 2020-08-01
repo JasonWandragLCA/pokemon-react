@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { compare } = require("bcryptjs");
 const auth = require("../middleware/auth");
+const { compare } = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 
+// Import Models
 const User = require("../models/User");
 
 // @route   GET api/auth
@@ -23,7 +23,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 // @route   POST api/auth
-// @desc    Auth user & get token
+// @desc    Authorize user & get token
 // @access  Public
 router.post(
   "/",
@@ -42,12 +42,12 @@ router.post(
     const { email, password } = req.body;
 
     try {
+      // tries to find user in db according to email
       let user = await User.findOne({ email });
-
       if (!user) res.status(400).json({ msg: "Invalid Credentials" });
 
+      // Check if password in DB matches password submitted using bcrypt.compare() method
       const isMatch = await compare(password, user.password);
-
       if (!isMatch) res.status(400).json({ msg: "Invalid Credentials" });
 
       // Create payload
