@@ -69,6 +69,7 @@ router.put("/:id", auth, async (req, res) => {
   if (sprites) pokemonFields.sprites = sprites;
 
   try {
+    // Try to find pokemon in database
     let pokemon = await Pokemon.findById(req.params.id);
     if (!pokemon) res.status(404).json({ msg: "Pokemon not found" });
 
@@ -91,8 +92,23 @@ router.put("/:id", auth, async (req, res) => {
 // @route   DELETE api/pokemon/:id
 // @desc    Delete pokemon
 // @access  Private
-router.delete("/:id", (req, res) => {
-  res.send("Delete pokemon");
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    // Try to find pokemon in DB
+    let pokemon = await Pokemon.findById(req.params.id);
+    if (!pokemon) res.status(404).json({ msg: "Pokemon not found" });
+
+    // Make sure user owns pokemon
+    if (pokemon.user.toString() !== req.user.id)
+      res.status(401).json({ msg: "Not Authorized" });
+
+    await Pokemon.findByIdAndRemove(req.params.id);
+
+    res.json({ msg: "Pokemon set free" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
 module.exports = router;
